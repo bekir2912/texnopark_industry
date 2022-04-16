@@ -78,7 +78,7 @@ if (!$currency) {
                     <div class="navbar-custom-menu">
                         <ul class="nav navbar-nav">
 <!--                            <li class="dropdown notifications-menu">-->
-<!--                                <a href="--><?//=Yii::$app->urlManager->createUrl(['/admin/notification']);?><!--">-->
+<!--                                <a href="<?=Yii::$app->urlManager->createUrl(['/admin/notification']);?>-->
 <!--                                    <i class="fa fa-bell-o"></i>-->
 <!--                                    <span class="label label-warning">--><?//=($notifications && count($notifications) > 0) ? count($notifications) : '';?><!--</span>-->
 <!--                                </a>-->
