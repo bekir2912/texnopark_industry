@@ -77,29 +77,7 @@ if (!$currency) {
 
                     <div class="navbar-custom-menu">
                         <ul class="nav navbar-nav">
-<!--                            <li class="dropdown notifications-menu">-->
-<!--                                <a href="--><?//=Yii::$app->urlManager->createUrl(['/admin/notification']);?><!--">-->
-<!--                                    <i class="fa fa-bell-o"></i>-->
-<!--                                    <span class="label label-warning">--><?//=($notifications && count($notifications) > 0) ? count($notifications) : '';?><!--</span>-->
-<!--                                </a>-->
-<!--                                --><?php //if ($notifications) {?>
-<!--                                    <ul class="dropdown-menu">-->
-<!--                                        <li class="header">У вас --><?//=count($notifications);?><!-- уведомлений</li>-->
-<!--                                        <li>-->
-<!--                                            <ul class="menu">-->
-<!--                                                --><?php //foreach ($notifications as $k => $v) {?>
-<!--                                                    <li>-->
-<!--                                                        <a href="--><?//=Yii::$app->urlManager->createUrl(['/admin/order/view', 'id'=>$v->object_id]);?><!--">-->
-<!--                                                            <i class="fa fa-shopping-cart text-green"></i> --><?//=$v->message;?>
-<!--                                                        </a>-->
-<!--                                                    </li>-->
-<!--                                                --><?php //}?>
-<!--                                            </ul>-->
-<!--                                        </li>-->
-<!--                                        <li class="footer"><a href="--><?//=Yii::$app->urlManager->createUrl(['/admin/notification']);?><!--">Смотреть все</a></li>-->
-<!--                                    </ul>-->
-<!--                                --><?php //}?>
-<!--                            </li>-->
+
                             <li class="dropdown user user-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <img src="<?=$user ? $user->getPhoto('100x100') : '';?>" class="user-image" alt="User Image">
