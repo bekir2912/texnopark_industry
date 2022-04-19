@@ -46,7 +46,7 @@ class DepartmentPlastic extends \yii\db\ActiveRecord
             [['model_id', 'number_poddon', 'amount', 'status'], 'required'],
             ['current_operation', 'unique'],
             [['model_id', 'user_id', 'part_model', 'is_defect', 'is_ckeck', 'department_id', 'amount', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['current_operation', 'number_poddon'], 'string', 'max' => 255],
+            [['current_operation', 'number_poddon', 'dates'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['model_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductModel::className(), 'targetAttribute' => ['model_id' => 'id']],
         ];
@@ -57,7 +57,7 @@ class DepartmentPlastic extends \yii\db\ActiveRecord
     {
         if (parent::beforeSave($insert)) {
             if($insert){
-                $this->dates = date('Y-m-d H:i');
+//                $this->dates = date('Y-m-d H:i');
                 $this->articul = $this->model->articul;
             }
             return true;

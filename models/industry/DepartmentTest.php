@@ -23,7 +23,7 @@ class DepartmentTest extends \yii\db\ActiveRecord
         return [
             [['line_id', 'department_id', 'user_id',  'model_id', 'amount'], 'required'],
             [['line_id', 'department_id', 'user_id','is_ckeck', 'model_id', 'amount', 'previous_department_id', 'is_defect', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['current_operation', 'number_poddon'], 'string', 'max' => 255],
+            [['current_operation', 'number_poddon', 'dates'], 'string', 'max' => 255],
             ['current_operation', 'unique'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['line_id'], 'exist', 'skipOnError' => true, 'targetClass' => BLine::className(), 'targetAttribute' => ['line_id' => 'id']],
@@ -58,7 +58,7 @@ class DepartmentTest extends \yii\db\ActiveRecord
     {
         if (parent::beforeSave($insert)) {
             if($insert){
-                $this->dates = date('Y-m-d H:i');
+//                $this->dates = date('Y-m-d H:i');
                 $this->articul = $this->model->articul;
             }
             return true;

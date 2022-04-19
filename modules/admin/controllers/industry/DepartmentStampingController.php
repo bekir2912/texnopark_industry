@@ -149,12 +149,16 @@ class DepartmentStampingController extends Controller
         $connection = Yii::$app->getDb();
 
         //Общее число готовой(факт) выпущенной продукции за сегодня день
-        $command2 = $connection->createCommand("SELECT s.dates, sum(s.amount) as `amount`
+        $command2 = $connection->createCommand("SELECT DATE(s.dates), sum(s.amount) as `amount`
                                             FROM b_department_stamping s
                                             Where s.status = 1 AND (s.dates IS NOT NULL) AND  (s.dates BETWEEN '$now_date' AND  '$tomorrow_date')
-                                            GROUP BY s.dates");
-        $total_now = $command2->queryAll();
-
+                                            GROUP BY DATE(s.dates)");
+        $total_now1 = $command2->queryAll();
+        //Для подсчета суммы, группировка в sql Запросе тут не пошла бы, так как захвачивается еще 8 часов в новом дне
+        $total_now = [0]['amount'];
+        foreach ($total_now1 as $num){
+            $total_now[0]['amount'] += $num['amount'];
+        }
 
         $d = new DateTime('first day of this month');
         $month = $d->format('Y-m-d');
@@ -167,30 +171,50 @@ class DepartmentStampingController extends Controller
         $last = $tomorrow .' 08:00:00';
 
         //Общее число запланированной(план) продукции на сегодняшний день
-        $command3 = $connection->createCommand("SELECT MONTH(p.date), sum(p.value) as `amount`
+        $command3 = $connection->createCommand("SELECT DATE(p.date), sum(p.value) as `amount`
                                             FROM b_plans_dates p
                                             Where p.status = 1 AND department_id = 1 AND (p.date IS NOT NULL) AND p.date BETWEEN '$month' AND  '$tomorrow_date'
-                                            GROUP BY MONTH(p.date)");
-        $total_plan_between = $command3->queryAll();
+                                            GROUP BY DATE(p.date)");
+        $total_plan_between1 = $command3->queryAll();
+
+        $total_plan_between = [0]['amount'];
+        foreach ($total_plan_between1 as $num){
+            $total_plan_between[0]['amount'] += $num['amount'];
+        }
         //На сегодня выпущенно
-        $command4 = $connection->createCommand("SELECT MONTH(p.dates), sum(p.amount) as `amount`
+        $command4 = $connection->createCommand("SELECT DATE(p.dates), sum(p.amount) as `amount`
                                             FROM b_department_stamping p
                                             Where p.status = 1 AND (p.dates IS NOT NULL) AND p.dates BETWEEN '$month' AND  '$tomorrow_date'
-                                            GROUP BY MONTH(p.dates)");
-        $total_ready_between = $command4->queryAll();
+                                            GROUP BY DATE(p.dates)");
+        $total_ready_between1 = $command4->queryAll();
+
+        $total_ready_between = [0]['amount'];
+        foreach ($total_ready_between1 as $num){
+            $total_ready_between[0]['amount'] += $num['amount'];
+        }
+
         //Общее число бракованной продукции на сегодняшний день
-        $command5 = $connection->createCommand("SELECT MONTH(p.dates), sum(p.count_deffect) as `amount`
+        $command5 = $connection->createCommand("SELECT DATE(p.dates), sum(p.count_deffect) as `amount`
                                             FROM b_deffects p
                                             Where p.status = 1 AND department_id = 1 AND (p.dates IS NOT NULL) AND p.dates BETWEEN '$month' AND  '$tomorrow_date'
-                                            GROUP BY MONTH(p.dates)");
-        $defect_between = $command5->queryAll();
+                                            GROUP BY DATE(p.dates)");
+        $defect_between1 = $command5->queryAll();
+        $defect_between = [0]['amount'];
+        foreach ($defect_between1 as $num){
+            $defect_between[0]['amount'] += $num['amount'];
+        }
+
         //Общее число плана за весь месяц
-        $command6 = $connection->createCommand("SELECT MONTH(p.date), sum(p.value) as `amount`
+        $command6 = $connection->createCommand("SELECT DATE(p.date), sum(p.value) as `amount`
                                             FROM b_plans_dates p
                                             Where p.status = 1 AND department_id = 1 AND (p.date IS NOT NULL) AND p.date BETWEEN '$month' AND  '$last'
-                                            GROUP BY MONTH(p.date)");
-        $total_plans = $command6->queryAll();
+                                            GROUP BY DATE(p.date)");
+        $total_plans1 = $command6->queryAll();
 
+        $total_plans = [0]['amount'];
+        foreach ($total_plans1 as $num){
+            $total_plans[0]['amount'] += $num['amount'];
+        }
 
         $start = yii::$app->request->get('start');
         $end = yii::$app->request->get('end');
@@ -209,13 +233,12 @@ class DepartmentStampingController extends Controller
             //Кол-во  продукции в отделе штампока план
 
             //Кол-во  продукции в отделе штампока план
-            $command = $connection->createCommand("SELECT DATE_FORMAT(date,'%Y-%m-%d') as 'dates', sum(value) as 'amount'
+            $command = $connection->createCommand("SELECT DATE(date) as 'dates', sum(value) as 'amount'
                                             FROM b_plans_dates 
                                             Where status = 1 AND date IS NOT NULL
                                             AND department_id = 1 AND date BETWEEN  '$start' AND '$end'
-                                            GROUP BY DATE_FORMAT(date,'%Y-%m-%d')");
+                                            GROUP BY DATE(date)");
             $plans = $command->queryAll();
-
             //Кол-во выпущенной продукции в отделе штампока на кажды день
             $command = $connection->createCommand("SELECT DATE_FORMAT(dates,'%Y-%m-%d') as 'dates', sum(amount) as 'amount'
                                             FROM b_department_stamping
@@ -226,20 +249,22 @@ class DepartmentStampingController extends Controller
 
         }else{
             //Кол-во  продукции в отделе штампока план
-            $command = $connection->createCommand("SELECT DATE_FORMAT(date,'%Y-%m-%d') as 'dates', sum(value) as 'amount'
+            $command = $connection->createCommand("SELECT DATE(date ) as 'dates', sum(value) as 'amount'
                                             FROM b_plans_dates 
                                             Where status = 1 AND date IS NOT NULL
                                             AND department_id = 1 AND date BETWEEN  NOW() - INTERVAL 30 DAY AND NOW() + INTERVAL 30 DAY
-                                            GROUP BY DATE_FORMAT(date,'%Y-%m-%d')");
+                                            GROUP BY DATE(date )");
             $plans = $command->queryAll();
 
+
             //Кол-во выпущенной продукции в отделе штампока на кажды день
-            $command = $connection->createCommand("SELECT DATE_FORMAT(dates,'%Y-%m-%d') as 'dates', sum(amount) as 'amount'
+            $command = $connection->createCommand("SELECT DATE(dates) as 'dates', sum(amount) as 'amount'
                                             FROM b_department_stamping
                                             Where status = 1 AND dates IS NOT NULL
-                                            AND dates BETWEEN  NOW() - INTERVAL 30 DAY AND NOW() + INTERVAL 30 DAY
-                                            GROUP BY DATE_FORMAT(dates,'%Y-%m-%d')");
+                                            AND dates BETWEEN  NOW() - INTERVAL 30 DAY AND '$tomorrow_date'
+                                            GROUP BY DATE(dates)");
             $department_fact = $command->queryAll();
+
         }
 
 

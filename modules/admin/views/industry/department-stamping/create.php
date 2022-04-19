@@ -1,5 +1,6 @@
 <?php
 
+use kartik\datetime\DateTimePicker;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
@@ -65,6 +66,21 @@ function generateRandomString($length = 10) {
                             <?= $form->field($model, 'status')->dropDownList(["0" => "В ожидании", "1" => "Готов"]); ?>
                         </div>
                     </div>
+
+                    <?php if($model->id) {?>
+                        <div class="col-sm-12">
+                            <div class="col-sm-6">
+                                <?= $form->field($model, 'dates')->textInput(['type' => 'datetime-local', 'maxlength' => true, 'readonly' => false, 'value' =>  $model->dates ?  (new DateTime($model->dates))->format("Y-m-d\TH:i") : date("Y-m-d\TH:i")])->label('Дата') ?>
+                            </div>
+                        </div>
+                    <?php }else{ ?>
+                        <div class="col-sm-12">
+                            <div class="col-sm-6">
+                                <?= $form->field($model, 'dates')->textInput(['type' => 'datetime-local', 'maxlength' => true, 'readonly' => false, 'value' => date("Y-m-d\TH:i") ])->label('Дата') ?>
+                            </div>
+                        </div>
+                    <?php } ?>
+
 
                 </div>
 

@@ -24,7 +24,7 @@ class DepartmentStamping extends \yii\db\ActiveRecord
             [['model_id', 'department_id', 'user_id', 'is_ckeck', 'amount', 'is_defect', 'status', 'created_at', 'updated_at'], 'integer'],
             [['part_model'], 'string'],
             ['current_operation', 'unique'],
-            [['current_operation', 'number_poddon'], 'string', 'max' => 255],
+            [['current_operation', 'number_poddon', 'dates'], 'string', 'max' => 255],
             [['department_id'], 'exist', 'skipOnError' => true, 'targetClass' => BDepartment::className(), 'targetAttribute' => ['department_id' => 'id']],
             [['model_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductModel::className(), 'targetAttribute' => ['model_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
@@ -53,7 +53,7 @@ class DepartmentStamping extends \yii\db\ActiveRecord
     {
         if (parent::beforeSave($insert)) {
             if($insert){
-                $this->dates = date('Y-m-d H:i');
+//                $this->dates = date('Y-m-d H:i');
                 $this->articul = $this->model->articul;
 
             }

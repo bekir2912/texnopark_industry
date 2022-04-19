@@ -23,7 +23,7 @@ class DepartmentSizing extends \yii\db\ActiveRecord
         return [
             [['user_id', 'department_id','current_operation', 'amount'], 'required'],
             [['user_id', 'department_id', 'model_id', 'is_ckeck', 'amount', 'previous_department_id', 'time_expire', 'is_defect', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['current_operation', 'number_poddon', 'new_number_poddon'], 'string', 'max' => 255],
+            [['current_operation', 'number_poddon', 'new_number_poddon', 'dates'], 'string', 'max' => 255],
             ['current_operation', 'unique'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['model_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductModel::className(), 'targetAttribute' => ['model_id' => 'id']],
@@ -57,7 +57,7 @@ class DepartmentSizing extends \yii\db\ActiveRecord
     {
         if (parent::beforeSave($insert)) {
             if($insert){
-                $this->dates = date('Y-m-d H:i');
+//                $this->dates = date('Y-m-d H:i');
                 $this->articul = $this->model->articul;
 
             }

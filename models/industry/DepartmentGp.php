@@ -85,7 +85,7 @@ class DepartmentGp extends \yii\db\ActiveRecord
     {
         if (parent::beforeSave($insert)) {
             if($insert){
-                $this->dates = date('Y-m-d H:i');
+//                $this->dates = date('Y-m-d H:i');
                 $this->articul = $this->model->articul;
             }
             return true;

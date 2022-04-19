@@ -47,7 +47,7 @@ class DepartmentPrinting extends \yii\db\ActiveRecord
             [['department_id', 'user_id', 'model_id',  'is_defect',  'is_ckeck', 'amount', 'status', 'created_at', 'updated_at'], 'integer'],
             [['model_id', 'number_poddon', 'amount', 'status'], 'required'],
             ['current_operation', 'unique'],
-            [['current_operation', 'number_poddon'], 'string', 'max' => 255],
+            [['current_operation', 'number_poddon', 'dates'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['model_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductModel::className(), 'targetAttribute' => ['model_id' => 'id']],
         ];
@@ -58,7 +58,7 @@ class DepartmentPrinting extends \yii\db\ActiveRecord
     {
         if (parent::beforeSave($insert)) {
             if($insert){
-                $this->dates = date('Y-m-d H:i');
+//                $this->dates = date('Y-m-d H:i');
 
                 $this->articul = $this->model->articul;
             }

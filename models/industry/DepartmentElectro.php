@@ -55,7 +55,7 @@ class DepartmentElectro extends \yii\db\ActiveRecord
     {
         if (parent::beforeSave($insert)) {
             if($insert){
-                $this->dates = date('Y-m-d H:i');
+//                $this->dates = date('Y-m-d H:i');
                 $this->articul = $this->model->articul;
             }
             return true;
@@ -103,6 +103,13 @@ class DepartmentElectro extends \yii\db\ActiveRecord
     {
         return $this->hasOne(ProductModel::className(), ['id' => 'model_id']);
     }
+
+    public function modelName($id)
+    {
+        $result = ProductModel::find()->where(['id' => $id])->one();
+        return $result->name_ru;
+    }
+
     public function getModelName($id)
     {
         $model  = ProductModel::findOne($id);

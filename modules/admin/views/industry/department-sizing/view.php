@@ -168,12 +168,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Дата изменения:</td>
-                                    <td><?=$model->updated_at ? date('d.m.Y H:i',$model->updated_at) : '-';?></td>
-                                </tr>
-                                <tr>
-                                    <td>Дата создания:</td>
+                                    <td>Дата создания для таймера:</td>
                                     <td><?=$model->created_at ? date('d.m.Y H:i',$model->updated_at) : '-';?></td>
+                                </tr>
+
+                                <tr>
+                                    <td>Дата создания для статистики:</td>
+                                    <td><?=$model->dates ? date_format(date_create($model->dates), 'd.m.Y H:i') : '-';?></td>
                                 </tr>
 
                                 <tr>

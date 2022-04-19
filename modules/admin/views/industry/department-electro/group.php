@@ -5,7 +5,7 @@ use yii\widgets\ActiveForm;
 
 $page = Yii::$app->request->get('id') ? 'Редактировать' : 'Добавить';
 
-$this->title = "Электро сборка: " . $page." операцию  " . $model->id;
+$this->title = "Электро сборка группировка: " . $page." операцию  " . $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Sizing', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -29,9 +29,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="col-sm-4">
-                            <?=$form->field($model, 'model_id')->dropDownList($models, ['class'=>'select-drop form-control','prompt'=>'- Выберите модель -', 'options'=>[$department->model_id? $department->model_id: $model->model_id=>["Selected"=>true]]])->label('Модель');?>
+                            <?=$form->field($model, 'model_id')->dropDownList( $models , ['class'=>'select-drop form-control','prompt'=>'- Выберите модель -', 'options'=>[$models->model_id? $models->model_id: $model->model_id=>["Selected"=>true]]])->label('Модель');?>
                             <?php if($department->model_id){?>
-                            <b>Предедущая модель: </b> <?=  $department->model_id? $model->nameModel($department->model_id) : '--' ?>
+                                <b>Предедущая модель: </b> <?=  $department->model_id? $model->nameModel($department->model_id) : '--' ?>
                             <?php }?>
                         </div>
                         <div class="col-sm-4">
@@ -53,13 +53,15 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?php }?>
                         <div class="col-sm-4">
                             <?= $form->field($model, 'number_poddon')->textInput(['maxlength' => true, 'value' => $department->number_poddon ? $department->number_poddon : $model->number_poddon])->label('Номер поддона <span class="required-field">*</span>'); ?>
-                            <b>Предедущий поддон: </b> <?=  $department->number_poddon? $department->number_poddon : '--' ?>
+                            <?php if($department->number_poddon){?>
+                                <b>Предедущий поддон: </b> <?=  $department->number_poddon? $department->number_poddon : '--' ?>
+                            <?php }?>
                         </div>
                         <?php if($department->department_id == 10){?>
-                        <div class="col-sm-4">
-                            <?= $form->field($model, 'status')->dropDownList([ "1" => "Готов", "0" => "В ожидании"], ['disabled'=>true]); ?>
-                            <?=$form->field($model, 'status')->hiddenInput(['value'=>1])->label(false);?>
-                        </div>
+                            <div class="col-sm-4">
+                                <?= $form->field($model, 'status')->dropDownList([ "1" => "Готов", "0" => "В ожидании"], ['disabled'=>true]); ?>
+                                <?=$form->field($model, 'status')->hiddenInput(['value'=>1])->label(false);?>
+                            </div>
                         <?php } else {?>
                             <div class="col-sm-4">
                                 <?= $form->field($model, 'status')->dropDownList([ "0" => "В ожидании", "1" => "Готов"] ); ?>
@@ -68,40 +70,17 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                     <?php if($department->department_id == 10|| $model->to_user) {?>
 
-                    <div class="col-sm-12">
-                        <div class="col-sm-4">
-                            <?= $form->field($model, 'to_user')->textInput(['maxlength' => true])->label() ?>
+                        <div class="col-sm-12">
+                            <div class="col-sm-4">
+                                <?= $form->field($model, 'to_user')->textInput(['maxlength' => true])->label() ?>
+                            </div>
                         </div>
-                    </div>
-
                     <?php }?>
-
-                    <?php if($model->id) {?>
-                        <div class="col-sm-12">
-                            <div class="col-sm-6">
-                                <?= $form->field($model, 'dates')->textInput(['type' => 'datetime-local', 'maxlength' => true, 'readonly' => false, 'value' =>  $model->dates ?  (new DateTime($model->dates))->format("Y-m-d\TH:i") : date("Y-m-d\TH:i")])->label('Дата') ?>
-                            </div>
-                        </div>
-                    <?php }else{ ?>
-                        <div class="col-sm-12">
-                            <div class="col-sm-6">
-                                <?= $form->field($model, 'dates')->textInput(['type' => 'datetime-local', 'maxlength' => true, 'readonly' => false, 'value' => date("Y-m-d\TH:i") ])->label('Дата') ?>
-                            </div>
-                        </div>
-                    <?php } ?>
-
                 </div>
 
                 <?=$form->field($model, 'user_id')->hiddenInput(['value'=> Yii::$app->user->identity->id ? Yii::$app->user->identity->id : 1])->label(false);?>
-<!--                --><?//=$form->field($model, 'department_id')->hiddenInput([ 'value'=> $department->department_id ? ($department->department_id +1)  : $model->department_id])->label(false);?>
-                <?=$form->field($model, 'previous_department_id')->hiddenInput([ 'value'=> $department->department_id ? ($department->department_id)  : ($model->previous_department_id ? $model->previous_department_id : 6)])->label(false);?>
-                <?php if($department->department_id == 5){ ?>
-                    <?=$form->field($model, 'department_id')->hiddenInput([ 'value'=> $department->department_id ? ($department->department_id +1)  : $model->department_id])->label(false);?>
-                <?php }elseif ($department->department_id == 10){ ?>
-                    <?=$form->field($model, 'department_id')->hiddenInput([ 'value'=> $department->department_id ? 6  : $model->department_id])->label(false);?>
-                <?php }elseif (empty($department->department_id)){ ?>
-                    <?=$form->field($model, 'department_id')->hiddenInput([ 'value'=> 6 ])->label(false);?>
-                <?php } ?>
+                <?=$form->field($model, 'previous_department_id')->hiddenInput([ 'value'=> 0])->label(false);?>
+                <?=$form->field($model, 'department_id')->hiddenInput([ 'value'=> 0])->label(false);?>
 
                 <?=Html::submitButton('<i class="fa fa-check-square-o"></i> Сохранить', ['class'=>'btn btn-primary pull-right']);?>
             </div>

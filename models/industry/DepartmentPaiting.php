@@ -22,7 +22,7 @@ class DepartmentPaiting extends \yii\db\ActiveRecord
         return [
             [['model_id', 'user_id', 'number_poddon', 'amount', 'part_model'], 'required'],
             [[ 'model_id', 'department_id',  'user_id', 'amount', 'is_ckeck', 'part_model', 'is_defect', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['current_operation', 'number_poddon'], 'string', 'max' => 255],
+            [['current_operation', 'number_poddon', 'dates'], 'string', 'max' => 255],
             ['current_operation', 'unique'],
             [['model_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductModel::className(), 'targetAttribute' => ['model_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
@@ -54,7 +54,7 @@ class DepartmentPaiting extends \yii\db\ActiveRecord
     {
         if (parent::beforeSave($insert)) {
             if($insert){
-                $this->dates = date('Y-m-d H:i');
+//                $this->dates = date('Y-m-d H:i');
                 $this->articul = $this->model->articul;
             }
             return true;

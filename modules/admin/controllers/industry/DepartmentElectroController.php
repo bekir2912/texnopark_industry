@@ -10,6 +10,7 @@ use app\models\industry\DepartmentPaiting;
 use app\models\industry\DepartmentPrinting;
 use app\models\industry\DepartmentSizing;
 use app\models\industry\DepartmentStamping;
+use app\models\industry\handbook\BDepartment;
 use app\models\industry\handbook\BLine;
 use app\models\industry\handbook\ProductModel;
 use app\models\user\User;
@@ -26,7 +27,7 @@ use yii\filters\VerbFilter;
 
 class DepartmentElectroController extends Controller
 {
-
+    const LIMIT = 120;
 
     public $user;
 
@@ -98,7 +99,6 @@ class DepartmentElectroController extends Controller
         $departments_filter = [];
 
         $departments =  DepartmentElectro::find()->select('previous_department_id')->orderBy('previous_department_id')->groupBy('previous_department_id')->all();
-
         if(!empty($departments)) {
             foreach ($departments as $dep) {
                 $departments_filter[$dep->previous->id] = $dep->previous->name_ru;
@@ -108,10 +108,9 @@ class DepartmentElectroController extends Controller
         // Для  фильтрации моделей
         $models =  \app\models\industry\DepartmentElectro::find()->select('model_id')->orderBy('model_id')->groupBy('model_id')->all();
         $models_filter = [];
-
         if(!empty($models)) {
             foreach ($models as $model) {
-                $models_filter[$model->model->id] = $model->model->name_ru;
+                $models_filter[$model->model->id] = $model->model->status;
             }
         }
         $dataProvider->setSort([
@@ -125,7 +124,7 @@ class DepartmentElectroController extends Controller
         $grouping = DepartmentElectro::find()
             ->select(['SUM(amount) as amount', 'model_id', $modelTable .'.name_ru'])
             ->innerJoin($modelTable, "$modelTable.id = $gpTable.model_id")
-            ->where(['previous_department_id' => 6])
+//            ->where(['previous_department_id' => 6])
             ->groupBy('model_id')
             ->all();
         $array_data = [];
@@ -136,7 +135,6 @@ class DepartmentElectroController extends Controller
         }
 
         $result = array_merge([['Week', 'Кол-во']], $array_data);
-
 
 
         return $this->render('index', [
@@ -153,6 +151,42 @@ class DepartmentElectroController extends Controller
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
+        ]);
+    }
+    public function actionGroup()
+    {
+
+        $model = new DepartmentElectro();
+        $gp_model = new DepartmentGp();
+
+
+        $modelTable = ProductModel::tableName();
+        $gpTable = DepartmentElectro::tableName();
+        $grouping = DepartmentElectro::find()
+            ->select(['SUM(amount) as amount', 'model_id', $modelTable .'.name_ru'])
+            ->innerJoin($modelTable, "$modelTable.id = $gpTable.model_id")
+//            ->where(['previous_department_id' => 6])
+            ->groupBy('model_id')
+            ->all();
+
+//        $models = ArrayHelper::map($grouping,  'model_id', 'amount');
+        $all_electro = DepartmentElectro::find()->where(['!=', 'department_id', 0])->andWhere(['status' => 0])->andWhere(['is_ckeck' => 1])->orderBy(['dates' => SORT_ASC])->all();
+
+        $models = [];
+        if (!empty($grouping)) {
+            foreach ($grouping as $prod) {
+                $models[$prod->model_id] = 'Модель: (' . (DepartmentElectro::modelName($prod->model_id))  . ')   Кол-во:' .  $prod->amount;
+            }
+        }
+
+//        foreach ($all_electro as $elect) {
+//
+//        }
+
+        return $this->render('group', [
+            'models' => $models,
+            'grouping' => $grouping,
+            'model' => $model,
         ]);
     }
 
@@ -225,14 +259,17 @@ class DepartmentElectroController extends Controller
         $now_date = $now_date .' 08:00:00';
         $connection = Yii::$app->getDb();
 
-
         //Общее число готовой(факт) выпущенной продукции за сегодня день
-        $command2 = $connection->createCommand("SELECT s.dates, sum(s.amount) as `amount`
+        $command2 = $connection->createCommand("SELECT DATE(s.dates), sum(s.amount) as `amount`
                                             FROM $department_name s
                                             Where s.status = 1 AND s.previous_department_id = 6  AND  s.department_id = 6 AND (s.dates IS NOT NULL) AND  (s.dates BETWEEN '$now_date' AND  '$tomorrow_date')
-                                            GROUP BY s.dates");
-        $total_now = $command2->queryAll();
-
+                                            GROUP BY DATE(s.dates)");
+        $total_now1 = $command2->queryAll();
+        //Для подсчета суммы, группировка в sql Запросе тут не пошла бы, так как захвачивается еще 8 часов в новом дне
+        $total_now = [0]['amount'];
+        foreach ($total_now1 as $num){
+            $total_now[0]['amount'] += $num['amount'];
+        }
 
         $d = new DateTime('first day of this month');
         $month = $d->format('Y-m-d');
@@ -245,29 +282,49 @@ class DepartmentElectroController extends Controller
         $last = $tomorrow .' 08:00:00';
 
         //Общее число запланированной(план) продукции на сегодняшний день
-        $command3 = $connection->createCommand("SELECT MONTH(p.date), sum(p.value) as `amount`
+        $command3 = $connection->createCommand("SELECT DATE(p.date), sum(p.value) as `amount`
                                             FROM b_plans_dates p
                                             Where p.status = 1 AND department_id = $department_id AND (p.date IS NOT NULL) AND p.date BETWEEN '$month' AND  '$tomorrow_date'
-                                            GROUP BY MONTH(p.date)");
-        $total_plan_between = $command3->queryAll();
+                                            GROUP BY DATE(p.date)");
+        $total_plan_between1 = $command3->queryAll();
+
+        $total_plan_between = [0]['amount'];
+        foreach ($total_plan_between1 as $num){
+            $total_plan_between[0]['amount'] += $num['amount'];
+        }
         //На сегодня выпущенно
-        $command4 = $connection->createCommand("SELECT MONTH(p.dates), sum(p.amount) as `amount`
+        $command4 = $connection->createCommand("SELECT DATE(p.dates), sum(p.amount) as `amount`
                                             FROM $department_name p
                                             Where p.status = 1 AND p.previous_department_id = 6  AND p.department_id = 6 AND (p.dates IS NOT NULL) AND p.dates BETWEEN '$month' AND  '$tomorrow_date'
-                                            GROUP BY MONTH(p.dates)");
-        $total_ready_between = $command4->queryAll();
+                                             GROUP BY DATE(p.dates)");
+        $total_ready_between1 = $command4->queryAll();
+
+        $total_ready_between = [0]['amount'];
+        foreach ($total_ready_between1 as $num){
+            $total_ready_between[0]['amount'] += $num['amount'];
+        }
+
         //Общее число бракованной продукции на сегодняшний день
-        $command5 = $connection->createCommand("SELECT MONTH(p.dates), sum(p.count_deffect) as `amount`
+        $command5 = $connection->createCommand("SELECT DATE(p.dates), sum(p.count_deffect) as `amount`
                                             FROM b_deffects p
                                             Where p.status = 1 AND department_id = $department_id AND (p.dates IS NOT NULL) AND p.dates BETWEEN '$month' AND  '$tomorrow_date'
-                                            GROUP BY MONTH(p.dates)");
-        $defect_between = $command5->queryAll();
+                                            GROUP BY DATE(p.dates)");
+        $defect_between1 = $command5->queryAll();
+        $defect_between = [0]['amount'];
+        foreach ($defect_between1 as $num){
+            $defect_between[0]['amount'] += $num['amount'];
+        }
         //Общее число плана за весь месяц
-        $command6 = $connection->createCommand("SELECT MONTH(p.date), sum(p.value) as `amount`
+        $command6 = $connection->createCommand("SELECT DATE(p.date), sum(p.value) as `amount`
                                             FROM b_plans_dates p
                                             Where p.status = 1 AND department_id = $department_id AND (p.date IS NOT NULL) AND p.date BETWEEN '$month' AND  '$last'
-                                            GROUP BY MONTH(p.date)");
-        $total_plans = $command6->queryAll();
+                                            GROUP BY DATE(p.date)");
+        $total_plans1 = $command6->queryAll();
+
+        $total_plans = [0]['amount'];
+        foreach ($total_plans1 as $num){
+            $total_plans[0]['amount'] += $num['amount'];
+        }
 
 
         $start = yii::$app->request->get('start');

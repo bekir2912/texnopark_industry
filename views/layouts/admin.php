@@ -322,42 +322,6 @@ if (!$currency) {
                             </li>
                         <?php }?>
 
-<!--                        --><?php //if ($user && (($user->role == User::ROLE_ADMIN) || in_array('worker', $accesses))) {?>
-<!--                            <li class="treeview--><?//=(($controller == 'worker-stamping') || ($controller == 'worker-paiting') || ($controller == 'worker-mechanica') || ($controller == 'worker-test') || ($controller == 'worker-sizing') || ($controller == 'worker-electro')|| ($controller == 'worker-gp')) ? ' active' : '';?><!--">-->
-<!--                                <a href="#">-->
-<!--                                    <i class="fa fa-group"></i> <span>Сотрудники</span>-->
-<!--                                    <span class="pull-right-container">-->
-<!--                                        <i class="fa fa-angle-left pull-right"></i>-->
-<!--                                    </span>-->
-<!--                                </a>-->
-<!--                                <ul class="treeview-menu">-->
-<!--                                    --><?php //if ($user->role == User::ROLE_ADMIN || in_array('worker-stamping', $accesses)|| in_array('worker-paiting', $accesses)) {?>
-<!--                                        <li><a href="--><?//=Yii::$app->urlManager->createUrl(['/admin/worker/'])?><!--"><i class="fa fa-circle-o"></i> Штамповка</a></li>-->
-<!--                                    --><?php //}?>
-<!--                                    --><?php //if ($user->role == User::ROLE_ADMIN || in_array('worker-stamping', $accesses)) {?>
-<!--                                        <li><a href="--><?//=Yii::$app->urlManager->createUrl(['/admin/worker-stamping/'])?><!--"><i class="fa fa-circle-o"></i> Штамповка</a></li>-->
-<!--                                    --><?php //}?>
-<!--                                    --><?php //if ($user->role == User::ROLE_ADMIN || in_array('worker-paiting', $accesses)) {?>
-<!--                                        <li><a href="--><?//=Yii::$app->urlManager->createUrl(['/admin/worker-paiting/'])?><!--"><i class="fa fa-circle-o"></i> Покраска</a></li>-->
-<!--                                    --><?php //}?>
-<!--                                    --><?php //if ($user->role == User::ROLE_ADMIN || in_array('worker-mechanica', $accesses)) {?>
-<!--                                        <li><a href="--><?//=Yii::$app->urlManager->createUrl(['/admin/worker-mechanica/'])?><!--"><i class="fa fa-circle-o"></i> Механическая сборка</a></li>-->
-<!--                                    --><?php //}?>
-<!--                                    --><?php //if ($user->role == User::ROLE_ADMIN || in_array('worker-test', $accesses)) {?>
-<!--                                        <li><a href="--><?//=Yii::$app->urlManager->createUrl(['/admin/worker-test'])?><!--"><i class="fa fa-circle-o"></i> Тест на утечку</a></li>-->
-<!--                                    --><?php //}?>
-<!--                                    --><?php //if ($user->role == User::ROLE_ADMIN || in_array('worker-sizing', $accesses)) {?>
-<!--                                        <li><a href="--><?//=Yii::$app->urlManager->createUrl(['/admin/worker-sizing'])?><!--"><i class="fa fa-circle-o"></i> Калибровка</a></li>-->
-<!--                                    --><?php //}?>
-<!--                                    --><?php //if ($user->role == User::ROLE_ADMIN || in_array('worker-electro', $accesses)) {?>
-<!--                                        <li><a href="--><?//=Yii::$app->urlManager->createUrl(['/admin/worker-electro'])?><!--"><i class="fa fa-circle-o"></i> Электро сбока</a></li>-->
-<!--                                    --><?php //}?>
-<!--                                    --><?php //if ($user->role == User::ROLE_ADMIN || in_array('worker-gp', $accesses)) {?>
-<!--                                        <li><a href="--><?//=Yii::$app->urlManager->createUrl(['/admin/worker-gp'])?><!--"><i class="fa fa-circle-o"></i> Готовоая продукция</a></li>-->
-<!--                                    --><?php //}?>
-<!--                                </ul>-->
-<!--                            </li>-->
-<!--                        --><?php //}?>
 
                         <?php if ($user && (($user->role == User::ROLE_ADMIN)
                                 || in_array('department', $accesses)

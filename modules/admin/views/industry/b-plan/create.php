@@ -58,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'type' => DatePicker::TYPE_COMPONENT_PREPEND,
                                 'value'=> $start ? $start: $model->date_start,
                                 'layout' => '{picker}{input}{remove}',
-                                'options' => ['placeholder' => 'Выберите дату','value' =>  $start ? $start: $model->date_start],
+                                'options' => ['placeholder' => 'Выберите дату','value' =>  $start ? $start: $model->date_start, 'autocomplete' => "off"],
                                 'pluginOptions' => [
                                     'language' => 'th',
                                     'todayHighlight' => true,
@@ -73,7 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'name' => 'date_plan',
                                 'type' => DatePicker::TYPE_COMPONENT_PREPEND,
                                 'layout' => '{picker}{input}{remove}',
-                                'options' => ['placeholder' => 'Выберите дату','value' =>  $end ? $end: $model->date_end],
+                                'options' => ['placeholder' => 'Выберите дату','value' =>  $end ? $end: $model->date_end, 'autocomplete' => "off"],
                                 'pluginOptions' => [
                                     'language' => 'th',
                                     'todayHighlight' => true,

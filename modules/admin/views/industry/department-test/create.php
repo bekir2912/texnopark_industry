@@ -70,6 +70,20 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                     </div>
 
+                    <?php if($model->id) {?>
+                        <div class="col-sm-12">
+                            <div class="col-sm-6">
+                                <?= $form->field($model, 'dates')->textInput(['type' => 'datetime-local', 'maxlength' => true, 'readonly' => false, 'value' =>  $model->dates ?  (new DateTime($model->dates))->format("Y-m-d\TH:i") : date("Y-m-d\TH:i")])->label('Дата') ?>
+                            </div>
+                        </div>
+                    <?php }else{ ?>
+                        <div class="col-sm-12">
+                            <div class="col-sm-6">
+                                <?= $form->field($model, 'dates')->textInput(['type' => 'datetime-local', 'maxlength' => true, 'readonly' => false, 'value' => date("Y-m-d\TH:i") ])->label('Дата') ?>
+                            </div>
+                        </div>
+                    <?php } ?>
+
                 </div>
                 <?=$form->field($model, 'previous_department_id')->hiddenInput([ 'value'=> $department->department_id ? ($department->department_id)  : ($model->previous_department_id ? $model->previous_department_id : 4)])->label(false);?>
                 <?=$form->field($model, 'user_id')->hiddenInput(['value'=> Yii::$app->user->identity->id ? Yii::$app->user->identity->id : 1])->label(false);?>

@@ -22,6 +22,21 @@ use yii\behaviors\TimestampBehavior;
 class BDepartment extends \yii\db\ActiveRecord
 {
 
+    const DEPARTMENT_CHECKING = 12;
+    const DEPARTMENT_FORMING = 11;
+    const DEPARTMENT_PRINTING = 10;
+    const DEPARTMENT_REGULATOR = 9;
+    const DEPARTMENT_PLASTIC = 8;
+    const DEPARTMENT_GP = 7;
+    const DEPARTMENT_ELECTRO = 6;
+    const DEPARTMENT_SIZING = 5;
+    const DEPARTMENT_TEST = 4;
+    const DEPARTMENT_MECHANICA = 3;
+    const DEPARTMENT_PAITING = 2;
+    const DEPARTMENT_STAMPING = 1;
+
+
+
     public static function tableName()
     {
         return 'b_departments';

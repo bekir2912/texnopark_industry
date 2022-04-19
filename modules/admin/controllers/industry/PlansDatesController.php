@@ -138,7 +138,7 @@ class PlansDatesController extends Controller
             Yii::$app->session->setFlash('dates_removed', 'План успешно удален');
         }
 
-        return $this->redirect(['/admin/industry/plans-dates']);
+        return $this->redirect(['/admin/industry/b-plan/view', 'id'=>$model->plan_id]);
     }
 
     protected function findModel($id)
