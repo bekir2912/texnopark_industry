@@ -53,7 +53,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?php }?>
                         <div class="col-sm-4">
                             <?= $form->field($model, 'number_poddon')->textInput(['maxlength' => true, 'value' => $department->number_poddon ? $department->number_poddon : $model->number_poddon])->label('Номер поддона <span class="required-field">*</span>'); ?>
-                            <b>Предедущий поддон: </b> <?=  $department->number_poddon? $department->number_poddon : '--' ?>
+                            <?php if($model->id) {?>
+                                <b>Предедущий поддон: </b> <?=  $department->number_poddon? $department->number_poddon : '--' ?>
+                            <?php }?>
                         </div>
                         <?php if($department->department_id == 10){?>
                         <div class="col-sm-4">
@@ -78,13 +80,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <?php if($model->id) {?>
                         <div class="col-sm-12">
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <?= $form->field($model, 'dates')->textInput(['type' => 'datetime-local', 'maxlength' => true, 'readonly' => false, 'value' =>  $model->dates ?  (new DateTime($model->dates))->format("Y-m-d\TH:i") : date("Y-m-d\TH:i")])->label('Дата') ?>
                             </div>
                         </div>
                     <?php }else{ ?>
                         <div class="col-sm-12">
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <?= $form->field($model, 'dates')->textInput(['type' => 'datetime-local', 'maxlength' => true, 'readonly' => false, 'value' => date("Y-m-d\TH:i") ])->label('Дата') ?>
                             </div>
                         </div>

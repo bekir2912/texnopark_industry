@@ -80,7 +80,7 @@ $close_defects = \app\models\industry\AllDeffect::find()->where(['department_id'
 
                 <div class="pull-right">
                     <?php if(Yii::$app->user->identity->role == User::ROLE_ADMIN || Yii::$app->user->identity->is_part == User::ROLE_UCHET) {?>
-                        <a href="<?=Yii::$app->urlManager->createUrl(['/admin/industry/department-electro/group'])?>" class="btn btn-primary"><i class="fa fa-plus"></i> Добавить поддон</a>
+                        <a href="<?=Yii::$app->urlManager->createUrl(['/admin/industry/department-electro/create'])?>" class="btn btn-primary"><i class="fa fa-plus"></i> Добавить поддон</a>
                     <?php } ?>
                 </div>
 
